@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Network Automation",
+    "questions": [
+      { "q": "This NETCONF operation is used to retrieve the entire configuration of a device.", "a": "What is <get-config>?" },
+      { "q": "In Python, this data type uses curly braces and key-value pairs, similar to JSON.", "a": "What is a Dictionary?" },
+      { "q": "This REST verb is used to replace an entire resource with a new version.", "a": "What is PUT?" },
+      { "q": "This library is the industry standard for interacting with NETCONF devices via Python.", "a": "What is ncclient?" },
+      { "q": "This header in an HTTP request tells the server what format the client expects (e.g., application/yang-data+json).", "a": "What is the Accept header?" }
+    ]
+  },
+  {
+    "name": "Infrastructure as Code",
+    "questions": [
+      { "q": "This Git command moves changes from your 'Staging' area to the local repository.", "a": "What is git commit?" },
+      { "q": "This Terraform block is used to define the specific provider version, like 'cisco-devnet/iosxe'.", "a": "What is the required_providers block?" },
+      { "q": "This Docker instruction in a Dockerfile defines the base image to start from.", "a": "What is FROM?" },
+      { "q": "This Ansible file maps 'logical' names to the actual IP addresses of your network devices.", "a": "What is the Inventory file?" },
+      { "q": "This Git action combines the history of two branches.", "a": "What is a Merge?" }
+    ]
+  },
+  {
+    "name": "Operations",
+    "questions": [
+      { "q": "This telemetry transport protocol uses Google's binary serialization for high speed.", "a": "What is gRPC (or Protocol Buffers)?" },
+      { "q": "This pyATS component is the 'engine' that handles device connections and command execution.", "a": "What is the Unicon (or Testbed)?" },
+      { "q": "This is the process of comparing a device's current config to its 'Golden' baseline.", "a": "What is Drift Detection?" },
+      { "q": "This CI/CD concept involves automatically merging developer code into a shared repo several times a day.", "a": "What is Continuous Integration?" },
+      { "q": "This type of webhook payload often includes a 'Secret' to verify the sender's identity.", "a": "What is an HMAC (or Signature Verification)?" }
+    ]
+  },
+  {
+    "name": "AI in Automation",
+    "questions": [
+      { "q": "This process involves using an LLM to generate code, which is then reviewed by a human engineer.", "a": "What is AI-Assisted Development?" },
+      { "q": "This specific protocol eliminates the need to rewrite custom API integrations for every different LLM.", "a": "What is Model Context Protocol (MCP)?" },
+      { "q": "This term refers to an AI's tendency to repeat the same incorrect network command if prompted multiple times.", "a": "What is Deterministic Error?" },
+      { "q": "This 'Fast' Python framework is the blueprint-recommended way to build MCP-compliant servers.", "a": "What is FastMCP?" },
+      { "q": "This AI role acts as an 'orchestrator' that decides which network tool to call based on a user's request.", "a": "What is an AI Agent?" }
+    ]
+  }
+]
