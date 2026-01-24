@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Network Automation",
+    "questions": [
+      { "q": "This standard RFC 8040 protocol maps YANG models to HTTP verbs like GET, POST, PUT, and DELETE.", "a": "What is RESTCONF?" },
+      { "q": "This Python library is commonly used to handle HTTP requests, including pagination and authentication.", "a": "What is the Requests library?" },
+      { "q": "This Ansible module ensures a specific configuration line exists in a Cisco IOS XE device's running config.", "a": "What is ios_config?" },
+      { "q": "This Terraform command applies changes to reach the desired state, effectively 'pushing' config.", "a": "What is terraform apply?" },
+      { "q": "In OAuth flows, this token is exchanged for a new Access Token when the original expires.", "a": "What is a Refresh Token?" }
+    ]
+  },
+  {
+    "name": "Infrastructure as Code",
+    "questions": [
+      { "q": "This Git command undoes changes in the working directory or resets the index.", "a": "What is git reset?" },
+      { "q": "In GitLab CI/CD, this stage typically happens after build but before deploy for linting/testing.", "a": "What is Pre-validation?" },
+      { "q": "This file defines multi-container Docker applications, including services and networks.", "a": "What is docker-compose.yaml?" },
+      { "q": "To test automation without hardware, you construct a simulation using this Cisco platform.", "a": "What is Cisco Modeling Labs (CML)?" },
+      { "q": "This Git command applies a specific commit from one branch to another without merging.", "a": "What is git cherry-pick?" }
+    ]
+  },
+  {
+    "name": "Operations",
+    "questions": [
+      { "q": "This Cisco Python test framework is used to implement change validation by parsing device output.", "a": "What is pyATS (or Genie)?" },
+      { "q": "This telemetry component 'pushes' high-frequency data from device to collector.", "a": "What is Model-Driven Telemetry?" },
+      { "q": "HTTP callbacks used to send real-time event notifications to a chat bot or app.", "a": "What are Webhooks?" },
+      { "q": "File containing the public key and identity info needed to obtain a CA-signed certificate.", "a": "What is a CSR?" },
+      { "q": "Coding practice that sanitizes user inputs to prevent injection attacks.", "a": "What is Input Validation?" }
+    ]
+  },
+  {
+    "name": "AI in Automation",
+    "questions": [
+      { "q": "AI agent that leverages LLMs to interact with users in natural language for network tasks.", "a": "What is a Conversational Agent?" },
+      { "q": "Major risk of using public AI tools involving leakage of proprietary code or network data.", "a": "What is Data Privacy?" },
+      { "q": "Standard protocol acting as a 'USB-C for AI', connecting LLMs to external tools.", "a": "What is Model Context Protocol (MCP)?" },
+      { "q": "Pythonic framework explicitly named in the blueprint for constructing MCP servers.", "a": "What is FastMCP?" },
+      { "q": "Phenomenon where AI confidently generates incorrect or non-existent configuration commands.", "a": "What is Hallucination?" }
+    ]
+  }
+]
