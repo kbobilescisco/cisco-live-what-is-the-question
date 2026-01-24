@@ -8,18 +8,18 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #000033; color: white; margin: 0; display: flex; flex-direction: column; height: 100vh; }
         header { background-color: #000055; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid gold; }
         h1 { margin: 0; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; color: gold; }
-        #scoreboard { display: flex; justify-content: space-around; background-color: #111; padding: 10px; }
-        .team-score { text-align: center; padding: 10px; border: 2px solid #444; border-radius: 5px; min-width: 100px; }
+        #scoreboard { display: flex; justify-content: space-around; background-color: #111; padding: 10px; flex-wrap: wrap; }
+        .team-score { text-align: center; padding: 10px; border: 2px solid #444; border-radius: 5px; min-width: 120px; margin: 5px; }
         .team-score.active { border-color: gold; background-color: #333; box-shadow: 0 0 10px gold; }
         .score-val { font-size: 1.5rem; font-weight: bold; color: gold; }
         #game-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; padding: 20px; flex-grow: 1; }
-        .category { background-color: #000088; color: white; text-align: center; font-weight: bold; padding: 15px; text-transform: uppercase; border: 2px solid black; font-size: 1.1rem; }
-        .tile { background-color: #0000AA; color: gold; font-size: 2rem; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid black; transition: background 0.2s; }
+        .category { background-color: #000088; color: white; text-align: center; font-weight: bold; padding: 15px; text-transform: uppercase; border: 2px solid black; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; }
+        .tile { background-color: #0000AA; color: gold; font-size: 2rem; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid black; transition: background 0.2s; min-height: 80px; }
         .tile:hover { background-color: #0000FF; }
         .tile.disabled { background-color: #000022; color: #000022; pointer-events: none; border-color: #000022; }
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; flex-direction: column; z-index: 100; }
         #modal-content { background: #000066; border: 4px solid gold; padding: 40px; width: 80%; text-align: center; border-radius: 10px; }
-        #question-text { font-size: 2.5rem; margin-bottom: 30px; text-transform: uppercase; line-height: 1.2; }
+        #question-text { font-size: 2.2rem; margin-bottom: 30px; text-transform: uppercase; line-height: 1.2; }
         #answer-text { font-size: 2rem; color: gold; margin-top: 20px; display: none; border-top: 1px solid white; padding-top: 20px; }
         .modal-btn { background: gold; color: black; border: none; padding: 10px 20px; font-size: 1.2rem; cursor: pointer; margin: 10px; font-weight: bold; }
         footer { background-color: #000055; padding: 10px; text-align: center; border-top: 1px solid #444; }
@@ -29,4 +29,168 @@
 
 <header>
     <h1>CCNP AUTOCOR Jeopardy</h1>
-    <div style="font-size: 1.2rem;">Current Turn: <span id="current-
+    <div style="font-size: 1.2rem;">Current Turn: <span id="current-team-display" style="color: gold; font-weight: bold;">Team 1</span></div>
+</header>
+
+<div id="scoreboard"></div>
+<div id="game-board"></div>
+
+<footer>
+    <button class="modal-btn" style="background: #ffcc00;" onclick="triggerFinalJeopardy()">GO TO FINAL JEOPARDY</button>
+</footer>
+
+<div id="modal">
+    <div id="modal-content">
+        <div id="timer" style="font-size: 3rem; color: red; font-weight: bold; margin-bottom: 20px;">30</div>
+        <div id="question-text">Question goes here...</div>
+        <button class="modal-btn" id="reveal-btn" onclick="revealAnswer()">Show Answer</button>
+        <div id="answer-text">
+            <span id="actual-answer">Answer...</span>
+            <br><br>
+            <div style="font-size: 1rem; color: #ccc;">Did the active team get it right?</div>
+            <button class="modal-btn" onclick="handleScore(true)">Yes (Add Points)</button>
+            <button class="modal-btn" style="background: #ff4444; color: white;" onclick="handleScore(false)">No (Next Team)</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let categories = [];
+    let currentTeam = 1;
+    let scores = [0, 0, 0, 0, 0]; 
+    let currentPoints = 0;
+    let timerInterval;
+
+    async function init() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const boardName = urlParams.get('board') || 'session_1';
+        
+        // Construct path clearly
+        const filePath = `./data/${boardName}.json`;
+        console.log("Attempting to load:", filePath);
+
+        try {
+            const response = await fetch(filePath);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            categories = await response.json();
+            
+            renderScoreboard();
+            renderBoard();
+        } catch (error) {
+            console.error("Board load failed:", error);
+            document.getElementById('game-board').innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+                    <h2 style="color: #ff4444;">Error Loading Questions</h2>
+                    <p>File: <b>${filePath}</b></p>
+                    <p>Details: ${error.message}</p>
+                    <p>Double check that the file name is lowercase in GitHub.</p>
+                </div>`;
+        }
+    }
+
+    function renderScoreboard() {
+        const sb = document.getElementById('scoreboard');
+        sb.innerHTML = "";
+        for (let i = 1; i <= 5; i++) {
+            sb.innerHTML += `
+                <div class="team-score ${i === 1 ? 'active' : ''}" id="team-${i}-box">
+                    <div>Team ${i}</div>
+                    <div class="score-val" id="score-${i}">${scores[i-1]}</div>
+                </div>`;
+        }
+    }
+
+    function renderBoard() {
+        const board = document.getElementById('game-board');
+        board.innerHTML = ""; 
+
+        // Headers
+        categories.forEach(cat => {
+            const div = document.createElement('div');
+            div.className = 'category';
+            div.innerText = cat.name;
+            board.appendChild(div);
+        });
+
+        // Rows (Always 5 rows of questions)
+        for (let r = 0; r < 5; r++) {
+            categories.forEach((cat) => {
+                const points = (r + 1) * 100;
+                const tile = document.createElement('div');
+                tile.className = 'tile';
+                tile.innerText = points;
+                
+                // Safety check if question exists
+                if(cat.questions[r]) {
+                    tile.onclick = () => openQuestion(tile, cat.questions[r], points);
+                } else {
+                    tile.classList.add('disabled');
+                    tile.innerText = "N/A";
+                }
+                board.appendChild(tile);
+            });
+        }
+    }
+
+    function openQuestion(tileElement, qData, points) {
+        tileElement.classList.add('disabled');
+        tileElement.innerText = ""; 
+        currentPoints = points;
+
+        document.getElementById('question-text').innerText = qData.q;
+        document.getElementById('actual-answer').innerText = qData.a;
+        document.getElementById('answer-text').style.display = 'none';
+        document.getElementById('modal').style.display = 'flex';
+        
+        startTimer(30);
+    }
+
+    function startTimer(seconds) {
+        let timeLeft = seconds;
+        const timerDisplay = document.getElementById('timer');
+        timerDisplay.innerText = timeLeft;
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            timerDisplay.innerText = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timerDisplay.innerText = "TIME'S UP";
+            }
+        }, 1000);
+    }
+
+    function revealAnswer() {
+        clearInterval(timerInterval);
+        document.getElementById('answer-text').style.display = 'block';
+    }
+
+    function handleScore(isCorrect) {
+        if (isCorrect) {
+            scores[currentTeam-1] += currentPoints;
+            document.getElementById(`score-${currentTeam}`).innerText = scores[currentTeam-1];
+        } 
+        
+        document.getElementById(`team-${currentTeam}-box`).classList.remove('active');
+        currentTeam = (currentTeam % 5) + 1;
+        document.getElementById(`team-${currentTeam}-box`).classList.add('active');
+        document.getElementById('current-team-display').innerText = `Team ${currentTeam}`;
+        
+        document.getElementById('modal').style.display = 'none';
+    }
+
+    function triggerFinalJeopardy() {
+        document.getElementById('question-text').innerText = "FINAL JEOPARDY: This new CCNP exam (350-901) replaces DEVCOR and introduces a heavy focus on AI agents and the Model Context Protocol.";
+        document.getElementById('actual-answer').innerText = "What is AUTOCOR?";
+        document.getElementById('answer-text').style.display = 'none';
+        document.getElementById('timer').innerText = "WAGER!";
+        document.getElementById('modal').style.display = 'flex';
+        clearInterval(timerInterval);
+    }
+
+    init();
+</script>
+</body>
+</html>
