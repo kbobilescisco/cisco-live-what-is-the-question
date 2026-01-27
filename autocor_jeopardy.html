@@ -6,8 +6,21 @@
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #000033; color: white; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         header { background-color: #000055; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid gold; }
+        #cisco-logo { height: 40px; margin-right: 20px; background: white; padding: 5px 10px; border-radius: 5px; }
+        .header-left { display: flex; align-items: center; gap: 20px; background: white; padding: 10px 20px; border-radius: 8px; }
+        .header-left h1 { color: #049fd9; margin: 0; font-size: 1.8rem; font-weight: 600; }
+        #mqtt-status { font-size: 0.9rem; padding: 5px 10px; border-radius: 5px; background: rgba(255,255,255,0.1); }
+        #mqtt-status.connected { color: #28a745; }
+        #mqtt-status.disconnected { color: #dc3545; }
+        #buzzer-banner { display: none; background: linear-gradient(135deg, #ffc107, #ff9800); color: #000; padding: 15px 20px; text-align: center; font-size: 1.5rem; font-weight: bold; border-bottom: 2px solid gold; align-items: center; justify-content: space-between; }
+        #buzzer-banner.active { display: flex; }
+        #buzzer-banner .team-icon { width: 40px; height: 40px; margin-right: 15px; }
+        #reset-buzzer { background: #dc3545; color: white; border: none; padding: 10px 20px; font-size: 1rem; font-weight: bold; border-radius: 5px; cursor: pointer; }
+        #reset-buzzer:hover { background: #c82333; }
         #scoreboard { display: flex; justify-content: space-around; background-color: #111; padding: 10px; border-bottom: 1px solid #444; }
-        .team-score { text-align: center; padding: 10px; border: 2px solid #444; border-radius: 5px; min-width: 140px; }
+        .team-score { text-align: center; padding: 10px; border: 2px solid #444; border-radius: 5px; min-width: 140px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .team-score .team-icon { width: 35px; height: 35px; }
+        .team-name { font-size: 1rem; font-weight: bold; color: #ccc; }
         .score-val { font-size: 2rem; font-weight: bold; color: gold; display: block; }
         #game-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 20px; flex-grow: 1; }
         .category { background-color: #000088; text-align: center; font-weight: bold; padding: 15px; text-transform: uppercase; border: 2px solid black; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
@@ -15,10 +28,26 @@
         .tile:hover { background-color: #0000FF; }
         .tile.disabled { background-color: #000022; color: transparent; pointer-events: none; border-color: #222; }
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.97); justify-content: center; align-items: center; z-index: 100; }
-        #modal-content { background: #000066; border: 4px solid gold; padding: 30px; width: 90%; text-align: center; border-radius: 15px; }
+        #modal-content { background: #000066; border: 4px solid gold; padding: 30px; width: 90%; max-width: 1000px; text-align: center; border-radius: 15px; max-height: 90vh; overflow-y: auto; position: relative; }
+        #modal-close-btn { position: absolute; top: 15px; right: 15px; background: #dc3545; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1.5rem; font-weight: bold; cursor: pointer; line-height: 1; display: flex; align-items: center; justify-content: center; }
+        #modal-close-btn:hover { background: #c82333; transform: scale(1.1); }
         #question-text { font-size: 2.8rem; margin-bottom: 20px; line-height: 1.1; }
+        #modal-buzzer-indicator { display: none; background: linear-gradient(135deg, #ffc107, #ff9800); color: #000; padding: 15px; margin: 20px 0; border-radius: 10px; font-size: 1.5rem; font-weight: bold; }
+        #modal-buzzer-indicator.active { display: flex; align-items: center; justify-content: center; gap: 15px; }
+        #modal-buzzer-indicator .team-icon { width: 40px; height: 40px; }
         #answer-area { display: none; border-top: 2px solid gold; padding-top: 20px; margin-top: 20px; }
+        #quick-scoring { display: none; margin: 20px 0; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 2px solid #444; }
+        #quick-scoring.active { display: block; }
+        #quick-scoring h3 { color: gold; margin-bottom: 15px; font-size: 1.3rem; }
+        .quick-btns { display: flex; gap: 20px; justify-content: center; }
+        .quick-btn { border: none; padding: 15px 40px; font-size: 1.3rem; cursor: pointer; font-weight: bold; border-radius: 8px; transition: all 0.2s; }
+        .quick-btn.correct { background: #28a745; color: white; }
+        .quick-btn.correct:hover { background: #218838; transform: scale(1.05); }
+        .quick-btn.wrong { background: #dc3545; color: white; }
+        .quick-btn.wrong:hover { background: #c82333; transform: scale(1.05); }
         .score-controls { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
+        .manual-override-section { margin-top: 20px; padding-top: 20px; border-top: 2px solid #444; }
+        .manual-override-section h4 { color: #ccc; font-size: 1rem; margin-bottom: 15px; }
         .btn-group { display: flex; flex-direction: column; align-items: center; background: #000044; padding: 15px; border-radius: 8px; border: 1px solid #555; min-width: 100px; }
         .modal-btn { background: gold; color: black; border: none; padding: 12px 25px; font-size: 1.2rem; cursor: pointer; font-weight: bold; border-radius: 5px; }
         .add-btn { background: #28a745; color: white; margin-bottom: 5px; width: 60px; font-size: 1.5rem; }
@@ -30,9 +59,20 @@
 <body>
 
 <header>
-    <h1 style="color: gold;">CCNP AUTOCOR JEOPARDY</h1>
-    <div id="status-msg">Standard Rules: Buzz in to answer!</div>
+    <div class="header-left">
+        <img id="cisco-logo" src="https://www.ciscolive.com/c/dam/r/ciscolive/headlibs/img/global-event/logo-dark-2025-new.svg" alt="Cisco Live 2025">
+        <h1>CCNP AUTOCOR JEOPARDY</h1>
+    </div>
+    <div id="mqtt-status" class="disconnected">🔴 Offline</div>
 </header>
+
+<div id="buzzer-banner">
+    <div style="display: flex; align-items: center;">
+        <div id="buzzer-team-icon" class="team-icon"></div>
+        <span id="buzzer-text">TEAM BUZZED FIRST!</span>
+    </div>
+    <button id="reset-buzzer" onclick="resetBuzzer()">RESET BUZZER</button>
+</div>
 
 <div id="scoreboard"></div>
 <div id="game-board"></div>
@@ -41,25 +81,84 @@
     <button class="modal-btn" onclick="triggerFinal()">FINAL JEOPARDY</button>
 </footer>
 
-<div id="modal">
-    <div id="modal-content">
+<div id="modal" onclick="handleModalClick(event)">
+    <div id="modal-content" onclick="event.stopPropagation()">
+        <button id="modal-close-btn" onclick="closeModal()">✕</button>
         <div id="question-text"></div>
-        <button class="modal-btn" id="reveal-btn" onclick="reveal()">SHOW ANSWER</button>
+        
+        <div id="modal-buzzer-indicator">
+            <div id="modal-buzzer-icon" class="team-icon"></div>
+            <span id="modal-buzzer-text">TEAM BUZZED!</span>
+        </div>
+        
+        <div id="quick-scoring">
+            <h3 id="quick-scoring-title">Did Team [NAME] answer correctly?</h3>
+            <div class="quick-btns">
+                <button class="quick-btn correct" onclick="quickScore(true)">✓ CORRECT</button>
+                <button class="quick-btn wrong" onclick="quickScore(false)">✗ WRONG</button>
+            </div>
+        </div>
+        
+        <button class="modal-btn" id="reveal-btn" onclick="reveal()" style="margin-top: 20px;">SHOW ANSWER</button>
         
         <div id="answer-area">
             <h2 id="actual-answer" style="color: gold; font-size: 2.5rem;"></h2>
-            <p>Update scores for the team(s) that buzzed in:</p>
-            <div id="manual-controls" class="score-controls"></div>
+            
+            <div class="manual-override-section">
+                <h4>Manual Override (All Teams):</h4>
+                <div id="manual-controls" class="score-controls"></div>
+            </div>
+            
             <br>
-            <button class="modal-btn" style="background:#555; color:white;" onclick="closeModal()">CLOSE CLUE</button>
+            <button class="modal-btn" style="background:#555; color:white;" onclick="closeModal()">CLOSE QUESTION</button>
         </div>
     </div>
 </div>
 
+<!-- Audio element for buzz sound -->
+<audio id="buzz-sound" preload="auto">
+    <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBgoOEhYaHiImKi4yNjo+QkZKTlJWWl5iZmpucnZ6foKGio6SlpqeoqaqrrK2ur7CxsrO0tba3uLm6u7y9vr/AwcLDxMXGx8jJysvMzc7P0NHS09TV1tfY2drb3N3e3+Dh4uPk5ebn6Onq6+zt7u/w8fLz9PX29/j5+vv8/f7/AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/wABAgMEBQYHCAkKCwwNDg8QERITFBUWFxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5/gIGCg4SFhoeIiYqLjI2Oj5CRkpOUlZaXmJmam5ydnp+goaKjpKWmp6ipqqusra6vsLGys7S1tre4ubq7vL2+v8DBwsPExcbHyMnKy8zNzs/Q0dLT1NXW19jZ2tvc3d7f4OHi4+Tl5ufo6err7O3u7/Dx8vP09fb3+Pn6+/z9/v8AAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyAhIiMkJSYnKCkqKywtLi8wMTIzNDU2Nzg5Ojs8PT4/QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXl9gYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXp7fH1+f4CBgoOEhYaHiImKi4yNjo+QkZKTlJWWl5iZmpucnZ6foKGio6SlpqeoqaqrrK2ur7CxsrO0tba3uLm6u7y9vr/AwcLDxMXGx8jJysvMzc7P0NHS09TV1tfY2drb3N3e3+Dh4uPk5ebn6Onq6+zt7u/w8fLz9PX29/j5+vv8/f7/" type="audio/wav">
+</audio>
+
+<script src="https://unpkg.com/mqtt@5.3.5/dist/mqtt.min.js"></script>
 <script>
+    const TEAMS = {
+        ansible: {
+            name: 'Ansible',
+            icon: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#EE0000" stroke="#fff" stroke-width="3"/><text x="50" y="65" font-size="50" font-weight="bold" fill="white" text-anchor="middle" font-family="Arial">A</text></svg>'
+        },
+        terraform: {
+            name: 'Terraform',
+            icon: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="5" width="90" height="90" rx="10" fill="#7B42BC" stroke="#fff" stroke-width="3"/><text x="50" y="70" font-size="50" font-weight="bold" fill="white" text-anchor="middle" font-family="Arial">T</text></svg>'
+        },
+        python: {
+            name: 'Python',
+            icon: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#3776AB" stroke="#FFD43B" stroke-width="4"/><text x="50" y="65" font-size="50" font-weight="bold" fill="#FFD43B" text-anchor="middle" font-family="Arial">P</text></svg>'
+        },
+        yang: {
+            name: 'YANG',
+            icon: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#2E7D32" stroke="#fff" stroke-width="3"/><path d="M50 20 L50 50 M50 50 L35 70 M50 50 L65 70 M35 70 L25 85 M35 70 L45 85 M65 70 L55 85 M65 70 L75 85" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/></svg>'
+        },
+        pyats: {
+            name: 'pyATS',
+            icon: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#FF6B35" stroke="#fff" stroke-width="3"/><path d="M35 70 L35 45 Q35 35 45 35 L55 35 Q65 35 65 45 L65 55" stroke="white" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="50" cy="65" r="4" fill="white"/><path d="M42 75 L58 75" stroke="#4CAF50" stroke-width="6" stroke-linecap="round"/></svg>'
+        }
+    };
+
+    const MQTT_BROKER = 'wss://test.mosquitto.org:8081';
+    const TOPIC_BUZZ = 'jeopardy/buzz';
+    const TOPIC_CONTROL = 'jeopardy/control';
+    const TOPIC_QUESTION = 'jeopardy/question';
+    
+    let mqttClient = null;
     let categories = [];
-    let scores = [0, 0, 0, 0, 0];
+    let scores = { ansible: 0, terraform: 0, python: 0, yang: 0, pyats: 0 };
     let currentPoints = 0;
+    let buzzerLocked = false;
+    let currentBuzzingTeam = null;
+    let teamsAttempted = []; // Track which teams have tried current question
+    let sessionId = Date.now(); // Unique ID for this game session
+    let audioContext = null; // Reusable audio context
 
     async function init() {
         const urlParams = new URLSearchParams(window.location.search);
@@ -69,26 +168,223 @@
             categories = await res.json();
             renderBoard();
             renderScoreboard();
+            connectMQTT();
         } catch (e) {
             document.getElementById('game-board').innerHTML = "<h2>Error loading JSON. Check /data/ folder.</h2>";
+        }
+    }
+
+    function connectMQTT() {
+        try {
+            mqttClient = mqtt.connect(MQTT_BROKER, {
+                clientId: 'host_' + Math.random().toString(16).substr(2, 8),
+                clean: true,
+                reconnectPeriod: 1000
+            });
+
+            mqttClient.on('connect', () => {
+                document.getElementById('mqtt-status').className = 'connected';
+                document.getElementById('mqtt-status').textContent = '🟢 Live';
+                
+                mqttClient.subscribe(TOPIC_BUZZ, (err) => {
+                    if (err) console.error('Subscribe error:', err);
+                });
+            });
+
+            mqttClient.on('message', (topic, message) => {
+                if (topic === TOPIC_BUZZ && !buzzerLocked) {
+                    const data = JSON.parse(message.toString());
+                    handleBuzz(data.team, data.timestamp);
+                }
+            });
+
+            mqttClient.on('error', (err) => {
+                console.error('MQTT Error:', err);
+                document.getElementById('mqtt-status').className = 'disconnected';
+                document.getElementById('mqtt-status').textContent = '🔴 Offline';
+            });
+
+            mqttClient.on('offline', () => {
+                document.getElementById('mqtt-status').className = 'disconnected';
+                document.getElementById('mqtt-status').textContent = '🔴 Offline';
+            });
+
+        } catch (err) {
+            console.error('MQTT connection failed:', err);
+        }
+    }
+
+    function handleBuzz(team, timestamp) {
+        buzzerLocked = true;
+        currentBuzzingTeam = team;
+        teamsAttempted.push(team);
+        
+        // Play buzz sound
+        playBuzzSound();
+        
+        // Update top banner
+        const banner = document.getElementById('buzzer-banner');
+        const iconDiv = document.getElementById('buzzer-team-icon');
+        const textDiv = document.getElementById('buzzer-text');
+        
+        iconDiv.innerHTML = TEAMS[team].icon;
+        textDiv.textContent = `TEAM ${TEAMS[team].name.toUpperCase()} BUZZED FIRST!`;
+        banner.classList.add('active');
+        
+        // Update modal buzzer indicator
+        const modalIndicator = document.getElementById('modal-buzzer-indicator');
+        const modalIcon = document.getElementById('modal-buzzer-icon');
+        const modalText = document.getElementById('modal-buzzer-text');
+        
+        modalIcon.innerHTML = TEAMS[team].icon;
+        modalText.textContent = `🔔 TEAM ${TEAMS[team].name.toUpperCase()} BUZZED!`;
+        modalIndicator.classList.add('active');
+        
+        // Show quick scoring buttons immediately
+        document.getElementById('quick-scoring').classList.add('active');
+        document.getElementById('quick-scoring-title').textContent = 
+            `Did Team ${TEAMS[team].name} answer correctly?`;
+        
+        // Disable all buzzers
+        mqttClient.publish(TOPIC_CONTROL, 'DISABLE', { qos: 1 });
+    }
+    
+    function playBuzzSound() {
+        try {
+            // Initialize audio context on first use
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            
+            // Resume context if suspended (browser autoplay policy)
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // Buzzer sound parameters - fun game show buzz!
+            oscillator.frequency.value = 800; // Hz
+            oscillator.type = 'square';
+            
+            // Volume envelope
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        } catch (e) {
+            console.log('Audio playback blocked or failed:', e);
+        }
+    }
+    
+    // Initialize audio context on first user interaction
+    document.addEventListener('click', function initAudio() {
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        document.removeEventListener('click', initAudio);
+    }, { once: true });
+
+    function resetBuzzer() {
+        buzzerLocked = false;
+        currentBuzzingTeam = null;
+        teamsAttempted = [];
+        sessionId = Date.now(); // New session ID for new question
+        
+        document.getElementById('buzzer-banner').classList.remove('active');
+        document.getElementById('modal-buzzer-indicator').classList.remove('active');
+        
+        // Re-enable all buzzers (full reset)
+        if (mqttClient) {
+            const resetMsg = JSON.stringify({
+                action: 'RESET',
+                sessionId: sessionId,
+                lockedTeams: []
+            });
+            mqttClient.publish(TOPIC_CONTROL, resetMsg, { qos: 1 });
+        }
+    }
+    
+    function quickScore(isCorrect) {
+        if (!currentBuzzingTeam) return;
+        
+        if (isCorrect) {
+            // Add points
+            scores[currentBuzzingTeam] += currentPoints;
+            updatePreviews();
+            
+            // Auto-reveal answer on correct (but don't close)
+            document.getElementById('answer-area').style.display = 'block';
+            document.getElementById('reveal-btn').style.display = 'none';
+            document.getElementById('quick-scoring').classList.remove('active');
+            
+        } else {
+            // Subtract points
+            scores[currentBuzzingTeam] -= currentPoints;
+            updatePreviews();
+            
+            // Check if other teams can still buzz
+            const remainingTeams = Object.keys(TEAMS).filter(t => !teamsAttempted.includes(t));
+            
+            if (remainingTeams.length > 0) {
+                // Re-enable buzzers ONLY for teams that haven't tried yet
+                buzzerLocked = false;
+                currentBuzzingTeam = null;
+                
+                document.getElementById('buzzer-banner').classList.remove('active');
+                document.getElementById('modal-buzzer-indicator').classList.remove('active');
+                document.getElementById('quick-scoring').classList.remove('active');
+                
+                // Send selective reset with list of locked teams
+                if (mqttClient) {
+                    const resetMsg = JSON.stringify({
+                        action: 'RESET',
+                        sessionId: sessionId,
+                        lockedTeams: teamsAttempted
+                    });
+                    mqttClient.publish(TOPIC_CONTROL, resetMsg, { qos: 1 });
+                }
+            } else {
+                // All teams have tried - reveal answer
+                document.getElementById('answer-area').style.display = 'block';
+                document.getElementById('reveal-btn').style.display = 'none';
+                document.getElementById('quick-scoring').classList.remove('active');
+            }
+        }
+    }
+    
+    function handleModalClick(event) {
+        // Close modal when clicking outside the content
+        if (event.target.id === 'modal') {
+            closeModal();
         }
     }
 
     function renderScoreboard() {
         const sb = document.getElementById('scoreboard');
         sb.innerHTML = "";
-        for (let i = 1; i <= 5; i++) {
-            sb.innerHTML += `<div class="team-score">TEAM ${i}<span class="score-val" id="s-${i}">${scores[i-1]}</span></div>`;
-        }
+        Object.keys(TEAMS).forEach(teamId => {
+            sb.innerHTML += `
+                <div class="team-score">
+                    <div class="team-icon">${TEAMS[teamId].icon}</div>
+                    <div class="team-name">${TEAMS[teamId].name}</div>
+                    <span class="score-val" id="s-${teamId}">${scores[teamId]}</span>
+                </div>`;
+        });
     }
 
     function updatePreviews() {
-        for (let i = 1; i <= 5; i++) {
-            const preview = document.getElementById(`preview-${i}`);
-            if (preview) preview.innerText = scores[i-1];
+        Object.keys(TEAMS).forEach(teamId => {
+            const preview = document.getElementById(`preview-${teamId}`);
+            if (preview) preview.innerText = scores[teamId];
             // Also update main board in background
-            document.getElementById(`s-${i}`).innerText = scores[i-1];
-        }
+            document.getElementById(`s-${teamId}`).innerText = scores[teamId];
+        });
     }
 
     function renderBoard() {
@@ -109,8 +405,26 @@
                 t.onclick = () => {
                     t.classList.add('disabled');
                     currentPoints = p;
-                    document.getElementById('question-text').innerText = c.questions[r].q;
-                    document.getElementById('actual-answer').innerText = c.questions[r].a;
+                    
+                    // Auto-reset buzzer when new question is clicked
+                    resetBuzzer();
+                    
+                    const question = c.questions[r].q;
+                    const answer = c.questions[r].a;
+                    
+                    // Publish question to answer key page
+                    if (mqttClient) {
+                        const questionData = JSON.stringify({
+                            question: question,
+                            answer: answer,
+                            points: p,
+                            category: c.name
+                        });
+                        mqttClient.publish(TOPIC_QUESTION, questionData, { qos: 1 });
+                    }
+                    
+                    document.getElementById('question-text').innerText = question;
+                    document.getElementById('actual-answer').innerText = answer;
                     document.getElementById('modal').style.display = 'flex';
                     document.getElementById('answer-area').style.display = 'none';
                     document.getElementById('reveal-btn').style.display = 'inline-block';
@@ -122,29 +436,37 @@
         
         const ctrl = document.getElementById('manual-controls');
         ctrl.innerHTML = "";
-        for(let i=1; i<=5; i++) {
+        Object.keys(TEAMS).forEach(teamId => {
             ctrl.innerHTML += `
                 <div class="btn-group">
-                    <strong>TEAM ${i}</strong>
-                    <div class="preview-val" id="preview-${i}">0</div>
-                    <button class="modal-btn add-btn" onclick="adj(${i}, true)">+</button>
-                    <button class="modal-btn sub-btn" onclick="adj(${i}, false)">-</button>
+                    <div style="width: 30px; height: 30px; margin-bottom: 5px;">${TEAMS[teamId].icon}</div>
+                    <strong>${TEAMS[teamId].name}</strong>
+                    <div class="preview-val" id="preview-${teamId}">0</div>
+                    <button class="modal-btn add-btn" onclick="adj('${teamId}', true)">+</button>
+                    <button class="modal-btn sub-btn" onclick="adj('${teamId}', false)">-</button>
                 </div>`;
-        }
+        });
     }
 
     function reveal() {
         document.getElementById('answer-area').style.display = 'block';
         document.getElementById('reveal-btn').style.display = 'none';
+        
+        // Hide quick scoring when answer is revealed
+        document.getElementById('quick-scoring').classList.remove('active');
     }
 
-    function adj(team, isAdd) {
-        if(isAdd) scores[team-1] += currentPoints;
-        else scores[team-1] -= currentPoints;
+    function adj(teamId, isAdd) {
+        if(isAdd) scores[teamId] += currentPoints;
+        else scores[teamId] -= currentPoints;
         updatePreviews(); // Updates both the preview and the background board
     }
 
-    function closeModal() { document.getElementById('modal').style.display = 'none'; }
+    function closeModal() { 
+        document.getElementById('modal').style.display = 'none';
+        document.getElementById('quick-scoring').classList.remove('active');
+        resetBuzzer();
+    }
 
     function triggerFinal() {
         currentPoints = 100; // Default increment for final adjustments

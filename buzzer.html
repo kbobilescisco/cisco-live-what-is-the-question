@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeopardy Buzzer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #000033 0%, #000055 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 {
+            color: gold;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .status {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        .status.connected { border: 2px solid #28a745; }
+        .status.disconnected { border: 2px solid #dc3545; }
+        .team-info {
+            background: rgba(255,255,255,0.1);
+            border: 3px solid gold;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .team-info svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+        }
+        .team-info h2 {
+            color: gold;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        .team-info p {
+            color: #ccc;
+            font-size: 1rem;
+        }
+        #buzzer {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(145deg, #dc3545, #c82333);
+            border: 4px solid #fff;
+            border-radius: 50%;
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: all 0.2s;
+            margin-top: 20px;
+        }
+        #buzzer:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(220,53,69,0.6);
+        }
+        #buzzer:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+        #buzzer:disabled {
+            background: #666;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        #buzzer.buzzed {
+            background: #28a745;
+            animation: pulse 0.5s;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        .message.success {
+            background: rgba(40, 167, 69, 0.3);
+            border: 2px solid #28a745;
+        }
+        .message.info {
+            background: rgba(255, 193, 7, 0.3);
+            border: 2px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 JEOPARDY BUZZER</h1>
+        
+        <div id="status" class="status disconnected">
+            Connecting to server...
+        </div>
+
+        <div id="team-info" class="team-info">
+            <!-- Team icon and name will be injected here -->
+        </div>
+
+        <button id="buzzer" disabled>
+            BUZZ!
+        </button>
+
+        <div id="message"></div>
+    </div>
+
+    <script src="https://unpkg.com/mqtt@5.3.5/dist/mqtt.min.js"></script>
+    <script>
+        const TEAMS = {
+            ansible: {
+                name: 'Ansible',
+                icon: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#EE0000" stroke="#fff" stroke-width="3"/><text x="50" y="65" font-size="50" font-weight="bold" fill="white" text-anchor="middle" font-family="Arial">A</text></svg>'
+            },
+            terraform: {
+                name: 'Terraform',
+                icon: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="5" width="90" height="90" rx="10" fill="#7B42BC" stroke="#fff" stroke-width="3"/><text x="50" y="70" font-size="50" font-weight="bold" fill="white" text-anchor="middle" font-family="Arial">T</text></svg>'
+            },
+            python: {
+                name: 'Python',
+                icon: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#3776AB" stroke="#FFD43B" stroke-width="4"/><text x="50" y="65" font-size="50" font-weight="bold" fill="#FFD43B" text-anchor="middle" font-family="Arial">P</text></svg>'
+            },
+            yang: {
+                name: 'YANG',
+                icon: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#2E7D32" stroke="#fff" stroke-width="3"/><path d="M50 20 L50 50 M50 50 L35 70 M50 50 L65 70 M35 70 L25 85 M35 70 L45 85 M65 70 L55 85 M65 70 L75 85" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/></svg>'
+            },
+            pyats: {
+                name: 'pyATS',
+                icon: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="45" fill="#FF6B35" stroke="#fff" stroke-width="3"/><path d="M35 70 L35 45 Q35 35 45 35 L55 35 Q65 35 65 45 L65 55" stroke="white" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="50" cy="65" r="4" fill="white"/><path d="M42 75 L58 75" stroke="#4CAF50" stroke-width="6" stroke-linecap="round"/></svg>'
+            }
+        };
+
+        const MQTT_BROKER = 'wss://test.mosquitto.org:8081';
+        const TOPIC_BUZZ = 'jeopardy/buzz';
+        const TOPIC_CONTROL = 'jeopardy/control';
+        
+        let client = null;
+        let selectedTeam = null;
+        let buzzerEnabled = true;
+        let hasBuzzed = false;
+        let currentSessionId = null;
+        let isLockedOut = false; // Locked out for current question
+
+        // Get team from URL parameter
+        function initTeam() {
+            const urlParams = new URLSearchParams(window.location.search);
+            selectedTeam = urlParams.get('team');
+            
+            if (!selectedTeam || !TEAMS[selectedTeam]) {
+                document.getElementById('team-info').innerHTML = `
+                    <h2 style="color: #dc3545;">❌ Invalid Team</h2>
+                    <p>Please scan the correct QR code for your team.</p>
+                `;
+                document.getElementById('buzzer').disabled = true;
+                document.getElementById('buzzer').textContent = 'INVALID URL';
+                return false;
+            }
+
+            // Display team info
+            const team = TEAMS[selectedTeam];
+            document.getElementById('team-info').innerHTML = `
+                ${team.icon}
+                <h2>Team ${team.name}</h2>
+                <p>You're ready to buzz in for your team!</p>
+            `;
+            
+            return true;
+        }
+
+        // Connect to MQTT
+        function connectMQTT() {
+            try {
+                client = mqtt.connect(MQTT_BROKER, {
+                    clientId: 'buzzer_' + Math.random().toString(16).substr(2, 8),
+                    clean: true,
+                    reconnectPeriod: 1000
+                });
+
+                client.on('connect', () => {
+                    document.getElementById('status').className = 'status connected';
+                    document.getElementById('status').textContent = '🟢 Connected - Ready to play!';
+                    
+                    // Subscribe to control messages
+                    client.subscribe(TOPIC_CONTROL, (err) => {
+                        if (err) console.error('Subscribe error:', err);
+                    });
+                });
+
+                client.on('message', (topic, message) => {
+                    if (topic === TOPIC_CONTROL) {
+                        const msg = message.toString();
+                        
+                        try {
+                            // Try to parse as JSON (new format)
+                            const data = JSON.parse(msg);
+                            
+                            if (data.action === 'RESET') {
+                                // Check if this is a new question (different sessionId)
+                                const isNewQuestion = !currentSessionId || data.sessionId !== currentSessionId;
+                                currentSessionId = data.sessionId;
+                                
+                                if (isNewQuestion) {
+                                    // Full reset for new question
+                                    buzzerEnabled = true;
+                                    hasBuzzed = false;
+                                    isLockedOut = false;
+                                    updateBuzzerState();
+                                    showMessage('New question - Ready to buzz!', 'info');
+                                } else {
+                                    // Selective reset - check if we're locked out
+                                    if (data.lockedTeams && data.lockedTeams.includes(selectedTeam)) {
+                                        // We answered wrong, stay locked
+                                        isLockedOut = true;
+                                        buzzerEnabled = false;
+                                        updateBuzzerState();
+                                        showMessage('You answered wrong - locked out for this question', 'info');
+                                    } else {
+                                        // We can buzz again
+                                        buzzerEnabled = true;
+                                        hasBuzzed = false;
+                                        updateBuzzerState();
+                                        showMessage('Other team wrong - you can buzz!', 'info');
+                                    }
+                                }
+                            } else if (data.action === 'DISABLE') {
+                                buzzerEnabled = false;
+                                updateBuzzerState();
+                            }
+                        } catch (e) {
+                            // Fallback for old string format (backward compatibility)
+                            if (msg === 'RESET') {
+                                buzzerEnabled = true;
+                                hasBuzzed = false;
+                                isLockedOut = false;
+                                updateBuzzerState();
+                                showMessage('Buzzer reset - Ready for next question!', 'info');
+                            } else if (msg === 'DISABLE') {
+                                buzzerEnabled = false;
+                                updateBuzzerState();
+                            }
+                        }
+                    }
+                });
+
+                client.on('error', (err) => {
+                    console.error('MQTT Error:', err);
+                    document.getElementById('status').className = 'status disconnected';
+                    document.getElementById('status').textContent = '🔴 Connection error';
+                });
+
+                client.on('offline', () => {
+                    document.getElementById('status').className = 'status disconnected';
+                    document.getElementById('status').textContent = '🔴 Offline - Reconnecting...';
+                });
+
+            } catch (err) {
+                console.error('Connection failed:', err);
+                document.getElementById('status').textContent = '🔴 Failed to connect';
+            }
+        }
+
+        // Buzzer click
+        document.getElementById('buzzer').addEventListener('click', () => {
+            if (!buzzerEnabled || hasBuzzed) return;
+
+            const buzzerBtn = document.getElementById('buzzer');
+            buzzerBtn.classList.add('buzzed');
+            
+            const payload = JSON.stringify({
+                team: selectedTeam,
+                timestamp: Date.now()
+            });
+
+            client.publish(TOPIC_BUZZ, payload, { qos: 1 }, (err) => {
+                if (err) {
+                    console.error('Publish error:', err);
+                    buzzerBtn.classList.remove('buzzed');
+                } else {
+                    hasBuzzed = true;
+                    buzzerEnabled = false;
+                    updateBuzzerState();
+                    showMessage(`Buzzed in for Team ${getTeamName(selectedTeam)}!`, 'success');
+                }
+            });
+        });
+
+        function updateBuzzerState() {
+            const buzzer = document.getElementById('buzzer');
+            buzzer.disabled = !selectedTeam || !buzzerEnabled || hasBuzzed || isLockedOut;
+            
+            if (isLockedOut) {
+                buzzer.textContent = 'LOCKED OUT';
+                buzzer.classList.remove('buzzed');
+            } else if (hasBuzzed) {
+                buzzer.textContent = 'BUZZED!';
+            } else if (!buzzerEnabled) {
+                buzzer.textContent = 'LOCKED';
+                buzzer.classList.remove('buzzed');
+            } else {
+                buzzer.textContent = 'BUZZ!';
+                buzzer.classList.remove('buzzed');
+            }
+        }
+
+        function showMessage(text, type) {
+            const msgDiv = document.getElementById('message');
+            msgDiv.textContent = text;
+            msgDiv.className = `message ${type}`;
+            setTimeout(() => {
+                msgDiv.textContent = '';
+                msgDiv.className = 'message';
+            }, 3000);
+        }
+
+        function getTeamName(team) {
+            const names = {
+                ansible: 'Ansible',
+                terraform: 'Terraform',
+                python: 'Python',
+                yang: 'YANG',
+                pyats: 'pyATS'
+            };
+            return names[team] || team;
+        }
+
+        // Initialize
+        if (initTeam()) {
+            connectMQTT();
+            updateBuzzerState();
+        }
+    </script>
+</body>
+</html>

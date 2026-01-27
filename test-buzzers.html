@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buzzer System Test - CCNP AUTOCOR Jeopardy</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #000033 0%, #000055 100%);
+            color: white;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: gold;
+            margin-bottom: 10px;
+            font-size: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .subtitle {
+            text-align: center;
+            color: #ccc;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+        .status-bar {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status-bar .connection {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #dc3545;
+        }
+        .status-indicator.connected {
+            background: #28a745;
+            box-shadow: 0 0 10px #28a745;
+        }
+        .reset-btn {
+            background: #ffc107;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .reset-btn:hover {
+            background: #ffca2c;
+        }
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .buzzers-section {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid #444;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .buzzers-section h2 {
+            color: gold;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        .buzzer-grid {
+            display: grid;
+            gap: 15px;
+        }
+        .buzzer-card {
+            background: rgba(255,255,255,0.08);
+            border: 3px solid;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .buzzer-card.ansible { border-color: #EE0000; }
+        .buzzer-card.terraform { border-color: #7B42BC; }
+        .buzzer-card.python { border-color: #3776AB; }
+        .buzzer-card.yang { border-color: #2E7D32; }
+        .buzzer-card.pyats { border-color: #FF6B35; }
+        .team-icon {
+            width: 50px;
+            height: 50px;
+            flex-shrink: 0;
+        }
+        .team-info {
+            flex-grow: 1;
+        }
+        .team-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: gold;
+            margin-bottom: 5px;
+        }
+        .team-status {
+            font-size: 0.85rem;
+            color: #ccc;
+        }
+        .buzz-btn {
+            background: linear-gradient(145deg, #dc3545, #c82333);
+            border: 3px solid #fff;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 120px;
+        }
+        .buzz-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(220,53,69,0.5);
+        }
+        .buzz-btn:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+        .buzz-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .buzz-btn.buzzed {
+            background: #28a745;
+        }
+        .mqtt-console {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid #444;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            max-height: 500px;
+        }
+        .mqtt-console h2 {
+            color: gold;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        .console-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .console-controls button {
+            background: #444;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .console-controls button:hover {
+            background: #555;
+        }
+        .console-log {
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-y: auto;
+            flex-grow: 1;
+            max-height: 400px;
+        }
+        .log-entry {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-left: 3px solid;
+            background: rgba(255,255,255,0.03);
+        }
+        .log-entry.publish { border-color: #ffc107; }
+        .log-entry.receive { border-color: #28a745; }
+        .log-entry.system { border-color: #17a2b8; }
+        .log-entry.error { border-color: #dc3545; }
+        .log-timestamp {
+            color: #888;
+            font-size: 0.8rem;
+        }
+        .log-topic {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .log-payload {
+            color: #28a745;
+            margin-top: 5px;
+        }
+        .urls-section {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid gold;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .urls-section h2 {
+            color: gold;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        .url-list {
+            display: grid;
+            gap: 10px;
+        }
+        .url-item {
+            background: rgba(0,0,0,0.3);
+            padding: 12px;
+            border-radius: 5px;
+            border-left: 4px solid;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .url-item.ansible { border-color: #EE0000; }
+        .url-item.terraform { border-color: #7B42BC; }
+        .url-item.python { border-color: #3776AB; }
+        .url-item.yang { border-color: #2E7D32; }
+        .url-item.pyats { border-color: #FF6B35; }
+        .url-text {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        .copy-btn {
+            background: #444;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .copy-btn:hover {
+            background: #555;
+        }
+        .copy-btn.copied {
+            background: #28a745;
+        }
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Buzzer System Test</h1>
+        <p class="subtitle">Test all team buzzers and monitor MQTT traffic before your session</p>
+
+        <div class="status-bar">
+            <div class="connection">
+                <div id="status-indicator" class="status-indicator"></div>
+                <span id="status-text">Connecting to MQTT broker...</span>
+            </div>
+            <button class="reset-btn" onclick="resetAllBuzzers()">🔄 RESET ALL BUZZERS</button>
+        </div>
+
+        <div class="main-content">
+            <div class="buzzers-section">
+                <h2>Team Buzzers</h2>
+                <div class="buzzer-grid">
+                    <div class="buzzer-card ansible">
+                        <div class="team-icon">
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="45" fill="#EE0000" stroke="#fff" stroke-width="3"/>
+                                <text x="50" y="65" font-size="50" font-weight="bold" fill="white" text-anchor="middle" font-family="Arial">A</text>
+                            </svg>
+                        </div>
+                        <div class="team-info">
+                            <div class="team-name">Ansible</div>
+                            <div class="team-status" id="status-ansible">Ready</div>
+                        </div>
+                        <button class="buzz-btn" data-team="ansible" onclick="buzz('ansible')">BUZZ</button>
+                    </div>
+
+                    <div class="buzzer-card terraform">
+                        <div class="team-icon">
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="5" y="5" width="90" height="90" rx="10" fill="#7B42BC" stroke="#fff" stroke-width="3"/>
+                                <text x="50" y="70" font-size="50" font-weight="bold" fill="white" text-anchor="middle" font-family="Arial">T</text>
+                            </svg>
+                        </div>
+                        <div class="team-info">
+                            <div class="team-name">Terraform</div>
+                            <div class="team-status" id="status-terraform">Ready</div>
+                        </div>
+                        <button class="buzz-btn" data-team="terraform" onclick="buzz('terraform')">BUZZ</button>
+                    </div>
+
+                    <div class="buzzer-card python">
+                        <div class="team-icon">
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="45" fill="#3776AB" stroke="#FFD43B" stroke-width="4"/>
+                                <text x="50" y="65" font-size="50" font-weight="bold" fill="#FFD43B" text-anchor="middle" font-family="Arial">P</text>
+                            </svg>
+                        </div>
+                        <div class="team-info">
+                            <div class="team-name">Python</div>
+                            <div class="team-status" id="status-python">Ready</div>
+                        </div>
+                        <button class="buzz-btn" data-team="python" onclick="buzz('python')">BUZZ</button>
+                    </div>
+
+                    <div class="buzzer-card yang">
+                        <div class="team-icon">
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="45" fill="#2E7D32" stroke="#fff" stroke-width="3"/>
+                                <path d="M50 20 L50 50 M50 50 L35 70 M50 50 L65 70 M35 70 L25 85 M35 70 L45 85 M65 70 L55 85 M65 70 L75 85" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+                            </svg>
+                        </div>
+                        <div class="team-info">
+                            <div class="team-name">YANG</div>
+                            <div class="team-status" id="status-yang">Ready</div>
+                        </div>
+                        <button class="buzz-btn" data-team="yang" onclick="buzz('yang')">BUZZ</button>
+                    </div>
+
+                    <div class="buzzer-card pyats">
+                        <div class="team-icon">
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="45" fill="#FF6B35" stroke="#fff" stroke-width="3"/>
+                                <path d="M35 70 L35 45 Q35 35 45 35 L55 35 Q65 35 65 45 L65 55" stroke="white" stroke-width="5" fill="none" stroke-linecap="round"/>
+                                <circle cx="50" cy="65" r="4" fill="white"/>
+                                <path d="M42 75 L58 75" stroke="#4CAF50" stroke-width="6" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div class="team-info">
+                            <div class="team-name">pyATS</div>
+                            <div class="team-status" id="status-pyats">Ready</div>
+                        </div>
+                        <button class="buzz-btn" data-team="pyats" onclick="buzz('pyats')">BUZZ</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mqtt-console">
+                <h2>MQTT Debug Console</h2>
+                <div class="console-controls">
+                    <button onclick="clearLog()">Clear Log</button>
+                    <button onclick="toggleAutoScroll()">
+                        <span id="autoscroll-text">Auto-scroll: ON</span>
+                    </button>
+                </div>
+                <div class="console-log" id="console-log">
+                    <!-- Log entries will appear here -->
+                </div>
+            </div>
+        </div>
+
+        <div class="urls-section">
+            <h2>📱 Team Buzzer URLs (Convert these to QR codes)</h2>
+            <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem;">
+                Replace <code>localhost:8000</code> with your actual server URL (e.g., your laptop's IP or GitHub Pages URL)
+            </p>
+            <div class="url-list">
+                <div class="url-item ansible">
+                    <span class="url-text" id="url-ansible">http://localhost:8000/buzzer.html?team=ansible</span>
+                    <button class="copy-btn" onclick="copyUrl('ansible')">Copy</button>
+                </div>
+                <div class="url-item terraform">
+                    <span class="url-text" id="url-terraform">http://localhost:8000/buzzer.html?team=terraform</span>
+                    <button class="copy-btn" onclick="copyUrl('terraform')">Copy</button>
+                </div>
+                <div class="url-item python">
+                    <span class="url-text" id="url-python">http://localhost:8000/buzzer.html?team=python</span>
+                    <button class="copy-btn" onclick="copyUrl('python')">Copy</button>
+                </div>
+                <div class="url-item yang">
+                    <span class="url-text" id="url-yang">http://localhost:8000/buzzer.html?team=yang</span>
+                    <button class="copy-btn" onclick="copyUrl('yang')">Copy</button>
+                </div>
+                <div class="url-item pyats">
+                    <span class="url-text" id="url-pyats">http://localhost:8000/buzzer.html?team=pyats</span>
+                    <button class="copy-btn" onclick="copyUrl('pyats')">Copy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/mqtt@5.3.5/dist/mqtt.min.js"></script>
+    <script>
+        const MQTT_BROKER = 'wss://test.mosquitto.org:8081';
+        const TOPIC_BUZZ = 'jeopardy/buzz';
+        const TOPIC_CONTROL = 'jeopardy/control';
+        
+        let client = null;
+        let buzzerStates = {
+            ansible: true,
+            terraform: true,
+            python: true,
+            yang: true,
+            pyats: true
+        };
+        let autoScroll = true;
+
+        function log(message, type = 'system', topic = null, payload = null) {
+            const consoleLog = document.getElementById('console-log');
+            const timestamp = new Date().toLocaleTimeString();
+            
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            
+            let html = `<div class="log-timestamp">[${timestamp}]</div>`;
+            
+            if (topic) {
+                html += `<div class="log-topic">Topic: ${topic}</div>`;
+            }
+            
+            html += `<div>${message}</div>`;
+            
+            if (payload) {
+                html += `<div class="log-payload">Payload: ${JSON.stringify(payload, null, 2)}</div>`;
+            }
+            
+            entry.innerHTML = html;
+            consoleLog.appendChild(entry);
+            
+            if (autoScroll) {
+                consoleLog.scrollTop = consoleLog.scrollHeight;
+            }
+        }
+
+        function connectMQTT() {
+            log('Connecting to MQTT broker...', 'system');
+            
+            try {
+                client = mqtt.connect(MQTT_BROKER, {
+                    clientId: 'test_' + Math.random().toString(16).substr(2, 8),
+                    clean: true,
+                    reconnectPeriod: 1000
+                });
+
+                client.on('connect', () => {
+                    document.getElementById('status-indicator').classList.add('connected');
+                    document.getElementById('status-text').textContent = '🟢 Connected to MQTT broker';
+                    log('✅ Connected to MQTT broker successfully', 'system');
+                    
+                    // Subscribe to both topics
+                    client.subscribe([TOPIC_BUZZ, TOPIC_CONTROL], (err) => {
+                        if (err) {
+                            log('❌ Subscribe error: ' + err.message, 'error');
+                        } else {
+                            log('✅ Subscribed to topics: ' + TOPIC_BUZZ + ', ' + TOPIC_CONTROL, 'system');
+                        }
+                    });
+                });
+
+                client.on('message', (topic, message) => {
+                    const msg = message.toString();
+                    
+                    if (topic === TOPIC_BUZZ) {
+                        try {
+                            const data = JSON.parse(msg);
+                            log(`📥 Buzz received from Team ${data.team.toUpperCase()}`, 'receive', topic, data);
+                            
+                            // Update UI
+                            const btn = document.querySelector(`button[data-team="${data.team}"]`);
+                            const status = document.getElementById(`status-${data.team}`);
+                            if (btn && status) {
+                                btn.classList.add('buzzed');
+                                btn.disabled = true;
+                                status.textContent = '✅ Buzzed!';
+                                buzzerStates[data.team] = false;
+                            }
+                        } catch (e) {
+                            log('❌ Error parsing buzz message: ' + e.message, 'error', topic);
+                        }
+                    } else if (topic === TOPIC_CONTROL) {
+                        try {
+                            // Try to parse as JSON
+                            const data = JSON.parse(msg);
+                            log(`📥 Control message received`, 'receive', topic, data);
+                            
+                            if (data.action === 'RESET') {
+                                if (data.lockedTeams && data.lockedTeams.length > 0) {
+                                    log(`🔒 Selective reset - locked teams: ${data.lockedTeams.join(', ')}`, 'system');
+                                    // Keep locked teams disabled, enable others
+                                    Object.keys(buzzerStates).forEach(team => {
+                                        if (data.lockedTeams.includes(team)) {
+                                            buzzerStates[team] = false;
+                                            const btn = document.querySelector(`button[data-team="${team}"]`);
+                                            const status = document.getElementById(`status-${team}`);
+                                            if (btn && status) {
+                                                btn.disabled = true;
+                                                status.textContent = '🔒 Locked out';
+                                            }
+                                        } else {
+                                            buzzerStates[team] = true;
+                                            const btn = document.querySelector(`button[data-team="${team}"]`);
+                                            const status = document.getElementById(`status-${team}`);
+                                            if (btn && status) {
+                                                btn.classList.remove('buzzed');
+                                                btn.disabled = false;
+                                                status.textContent = 'Ready';
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    log('🔄 Full reset - all teams enabled', 'system');
+                                    resetAllBuzzersUI();
+                                }
+                            } else if (data.action === 'DISABLE') {
+                                disableAllBuzzersUI();
+                            }
+                        } catch (e) {
+                            // Fallback for old string format
+                            log(`📥 Control message received: ${msg}`, 'receive', topic, { command: msg });
+                            if (msg === 'RESET') {
+                                resetAllBuzzersUI();
+                            } else if (msg === 'DISABLE') {
+                                disableAllBuzzersUI();
+                            }
+                        }
+                    }
+                });
+
+                client.on('error', (err) => {
+                    document.getElementById('status-indicator').classList.remove('connected');
+                    document.getElementById('status-text').textContent = '🔴 Connection error';
+                    log('❌ MQTT Error: ' + err.message, 'error');
+                });
+
+                client.on('offline', () => {
+                    document.getElementById('status-indicator').classList.remove('connected');
+                    document.getElementById('status-text').textContent = '🔴 Offline - Reconnecting...';
+                    log('⚠️ MQTT client offline, attempting to reconnect...', 'system');
+                });
+
+                client.on('reconnect', () => {
+                    log('🔄 Attempting to reconnect to MQTT broker...', 'system');
+                });
+
+            } catch (err) {
+                log('❌ Connection failed: ' + err.message, 'error');
+            }
+        }
+
+        function buzz(team) {
+            if (!buzzerStates[team]) return;
+            
+            const payload = {
+                team: team,
+                timestamp: Date.now()
+            };
+
+            log(`📤 Publishing buzz for Team ${team.toUpperCase()}`, 'publish', TOPIC_BUZZ, payload);
+
+            client.publish(TOPIC_BUZZ, JSON.stringify(payload), { qos: 1 }, (err) => {
+                if (err) {
+                    log('❌ Publish error: ' + err.message, 'error');
+                } else {
+                    log('✅ Buzz published successfully', 'publish');
+                    
+                    // Update local UI
+                    const btn = document.querySelector(`button[data-team="${team}"]`);
+                    const status = document.getElementById(`status-${team}`);
+                    if (btn && status) {
+                        btn.classList.add('buzzed');
+                        btn.disabled = true;
+                        status.textContent = '✅ Buzzed!';
+                        buzzerStates[team] = false;
+                    }
+                }
+            });
+        }
+
+        function resetAllBuzzers() {
+            const resetMsg = JSON.stringify({
+                action: 'RESET',
+                sessionId: Date.now(),
+                lockedTeams: []
+            });
+            
+            log('📤 Publishing RESET command (full reset)', 'publish', TOPIC_CONTROL, JSON.parse(resetMsg));
+            
+            client.publish(TOPIC_CONTROL, resetMsg, { qos: 1 }, (err) => {
+                if (err) {
+                    log('❌ Reset publish error: ' + err.message, 'error');
+                } else {
+                    log('✅ RESET command published successfully', 'publish');
+                    resetAllBuzzersUI();
+                }
+            });
+        }
+
+        function resetAllBuzzersUI() {
+            Object.keys(buzzerStates).forEach(team => {
+                buzzerStates[team] = true;
+                const btn = document.querySelector(`button[data-team="${team}"]`);
+                const status = document.getElementById(`status-${team}`);
+                if (btn && status) {
+                    btn.classList.remove('buzzed');
+                    btn.disabled = false;
+                    status.textContent = 'Ready';
+                }
+            });
+            log('🔄 All buzzers reset locally', 'system');
+        }
+
+        function disableAllBuzzersUI() {
+            Object.keys(buzzerStates).forEach(team => {
+                buzzerStates[team] = false;
+                const btn = document.querySelector(`button[data-team="${team}"]`);
+                if (btn) {
+                    btn.disabled = true;
+                }
+            });
+        }
+
+        function clearLog() {
+            document.getElementById('console-log').innerHTML = '';
+            log('Console cleared', 'system');
+        }
+
+        function toggleAutoScroll() {
+            autoScroll = !autoScroll;
+            document.getElementById('autoscroll-text').textContent = `Auto-scroll: ${autoScroll ? 'ON' : 'OFF'}`;
+        }
+
+        function copyUrl(team) {
+            const urlText = document.getElementById(`url-${team}`).textContent;
+            navigator.clipboard.writeText(urlText).then(() => {
+                const btn = event.target;
+                btn.textContent = '✓ Copied';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Initialize
+        connectMQTT();
+    </script>
+</body>
+</html>
