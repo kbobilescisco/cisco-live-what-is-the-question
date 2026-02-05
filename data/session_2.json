@@ -2,41 +2,97 @@
   {
     "name": "Network Automation",
     "questions": [
-      { "q": "This JSON-based data modeling language is used to define the structure of data sent over NETCONF or RESTCONF.", "a": "What is YANG?" },
-      { "q": "This HTTP status code indicates that a request was successful and a new resource was created.", "a": "What is 201 Created?" },
-      { "q": "In Python, this 'with' statement keyword ensures a file or network connection is closed automatically.", "a": "What is a Context Manager?" },
-      { "q": "This Cisco platform provides a 'single pane of glass' API for managing campus network automation.", "a": "What is Catalyst Center (formerly DNA Center)?" },
-      { "q": "This OAuth 2.0 grant type is used for machine-to-machine communication without a user present.", "a": "What is Client Credentials?" }
+  { 
+    "q": "This JSON-based data modeling language is used to define the structure of data sent over NETCONF or RESTCONF.", 
+    "a": "What is YANG?" },
+  {
+    "q": "When using RESTCONF (RFC 8040) to modify a specific OSPF area ID within a YANG-modelled configuration, this HTTP method is used to merge the change into the existing data store without replacing the entire OSPF container.",
+    "a": "What is PATCH?"
+  },
+  {
+    "q": "To prevent a Python automation script from hanging indefinitely when a network controller is unresponsive, this specific parameter should be included in every 'requests' library call to define a maximum wait time for a server response.",
+    "a": "What is timeout?"
+  },
+  {
+    "q": "This Ansible command-line flag, often used alongside check mode, provides a side-by-side comparison of the current device configuration versus the proposed changes before they are committed to the network device.",
+    "a": "What is --diff?"
+  },
+  { "q": "A network team uses a visual orchestration tool to automate site deployments. While 90% of the tasks are drag-and-drop, they must write a custom script to parse a non-standard JSON file from a legacy inventory system. This specific hybrid approach is defined as...",
+    "a": "What is Low-Code automation?" }
     ]
   },
   {
     "name": "Infrastructure as Code",
     "questions": [
-      { "q": "This Git command creates a local copy of a remote repository.", "a": "What is git clone?" },
-      { "q": "In Terraform, this file tracks the current state of your managed infrastructure.", "a": "What is the terraform.tfstate file?" },
-      { "q": "This Docker command lists all containers that are currently running.", "a": "What is docker ps?" },
-      { "q": "This IaC tool uses a 'Push' model and relies on SSH to manage Cisco devices.", "a": "What is Ansible?" },
-      { "q": "This Git strategy involves keeping the main branch clean and doing all work on 'feature' branches.", "a": "What is Branching (or Gitflow)?" }
+  {
+    "q": "An engineer needs to undo a commit that has already been pushed to a shared remote repository. To avoid rewriting history and causing issues for other team members, they use this command to create a new 'inverse' commit.",
+    "a": "What is git revert?"
+  },
+  { 
+    "q": "A business requirement states that the automation system must never 'guess' the status of the network; it must only push configurations that match a central database. In this architecture, the database is serving as the...",
+    "a": "What is the Source of Truth (SoT)?"
+  },
+  {
+    "q": "To move the HEAD of a local repository back to a previous commit and completely discard all uncommitted changes in the working directory, an engineer would use this command with a specific flag.",
+    "a": "What is git reset --hard?"
+  },
+
+  {
+    "q": "In a GitLab CI/CD pipeline, this specific stage (2.3.d) is responsible for running operational state checks (e.g., 'show ip ospf neighbor') to confirm that the network reached the desired state after the configuration was applied.",
+    "a": "What is the post-validation stage?"
+  },
+  {
+    "q": "A YANG 'container' named 'system' contains a 'leaf' named 'hostname'. When representing this in YAML for an automation tool, the 'hostname' would be indented under 'system' and separated by this character.",
+    "a": "What is a colon (: )?"
+  }
     ]
   },
   {
     "name": "Operations",
     "questions": [
-      { "q": "This 'on-change' telemetry mode only sends data when a specific value crosses a threshold.", "a": "What is Event-driven Telemetry?" },
-      { "q": "This tool is the graphical user interface for testing and documenting REST API calls.", "a": "What is Postman?" },
-      { "q": "This type of pipeline automated test checks if a small, isolated unit of code works as expected.", "a": "What is a Unit Test?" },
-      { "q": "This Cisco technology allows for hosting Python scripts directly on a switch or router.", "a": "What is Guest Shell (IOX)?" },
-      { "q": "This security practice involves keeping API keys and passwords out of your Git source code.", "a": "What is Secret Management (or using .env files)?" }
+  {
+    "q": "In a Python automation script, this specific class from the 'logging.handlers' module is used to direct log messages to a remote server using the standard Syslog protocol, typically over UDP port 514.",
+    "a": "What is SysLogHandler?"
+  },
+  {
+    "q": "In a Model-Driven Telemetry 'Dial-In' session, where the collector initiates the connection and the network device acts as the server, this XML-based protocol is used to establish and manage the subscription.",
+    "a": "What is NETCONF?"
+  },
+  {
+    "q": "To prevent a Python script from attempting to configure an invalid network segment, an engineer implements this specific logic to ensure that a user-provided VLAN ID is an integer strictly within the range of 1 to 4094.",
+    "a": "What is Input Validation?"
+  },
+  {
+    "q": "After a configuration change, an engineer has two snapshots of the network state. To programmatically identify exactly which OSPF neighbors were lost or which routes were modified, they would execute this specific pyATS CLI tool.",
+    "a": "What is pyats diff?"
+  },      
+  {
+    "q": "To ensure 'Non-Repudiation' and security in a network automation solution, an engineer configures the system to use these specific digital credentials, which are signed by a trusted third party to verify the identity of the automation server.",
+    "a": "What are CA-Signed Certificates?"
+  }
     ]
   },
   {
     "name": "AI in Automation",
     "questions": [
-      { "q": "This term describes an LLM's ability to 'remember' earlier parts of a conversation.", "a": "What is Context Window?" },
-      { "q": "This open standard allows AI models to safely execute local Python code for network analysis.", "a": "What is Model Context Protocol (MCP)?" },
-      { "q": "This 'Prompt' technique involves providing the AI with a few examples of the desired output format.", "a": "What is Few-shot Prompting?" },
-      { "q": "This is the primary security risk when an AI agent has 'Write' access to network configurations.", "a": "What is Unintended Configuration Change (or Autonomous Risk)?" },
-      { "q": "This specific MCP server component acts as the 'bridge' to a specific Cisco API.", "a": "What is a Tool (or Resource)?" }
+  {
+    "q": "When an AI agent provides a response that is grammatically correct and technically plausible but contains non-existent CLI commands or incorrect logic, the recommendation is suffering from this specific phenomenon.",
+    "a": "What is a Hallucination?"
+  },      
+  { "q": "This open standard allows AI models to safely execute local Python code for network analysis.",
+    "a": "What is Model Context Protocol (MCP)?" 
+  },
+  {
+    "q": "To objectively measure the accuracy of an AI's troubleshooting advice, an engineer compares the AI's output against a verified dataset of known issues and their verified solutions, which is referred to as this.",
+    "a": "What is the Ground Truth?"
+  },
+  {
+    "q": "Before trusting an AI-generated configuration change, a professional automation workflow uses this specific 'Operations' tool to simulate the change in a virtual environment and verify that the resulting network state matches the intended outcome.",
+    "a": "What is Cisco Modeling Labs (CML) or pyATS?"
+  },
+  { "q": "This specific MCP server component acts as the 'bridge' to a specific Cisco API.", 
+    "a": "What is a Tool (or Resource)?" 
+  }
     ]
   }
 ]
