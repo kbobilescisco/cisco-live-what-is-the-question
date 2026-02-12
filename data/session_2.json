@@ -17,8 +17,9 @@
     "q": "This Ansible command-line flag, often used alongside check mode, provides a side-by-side comparison of the current device configuration versus the proposed changes before they are committed to the network device.",
     "a": "What is --diff?"
   },
-  { "q": "A network team uses a visual orchestration tool to automate site deployments. While 90% of the tasks are drag-and-drop, they must write a custom script to parse a non-standard JSON file from a legacy inventory system. This specific hybrid approach is defined as...",
-    "a": "What is Low-Code automation?" }
+  { "q": "You are tasked with moving a specific OSPF configuration resource from one Terraform module to another. To avoid a Destroy and Recreate action, you must use this command to re-map the existing physical resource to its new logical address in the code.",
+    "a": "What is terraform state mv?" 
+  }
     ]
   },
   {
@@ -51,12 +52,12 @@
     "name": "Operations",
     "questions": [
   {
-    "q": "In a Python automation script, this specific class from the 'logging.handlers' module is used to direct log messages to a remote server using the standard Syslog protocol, typically over UDP port 514.",
-    "a": "What is SysLogHandler?"
-  },
-  {
     "q": "In a Model-Driven Telemetry 'Dial-In' session, where the collector initiates the connection and the network device acts as the server, this XML-based protocol is used to establish and manage the subscription.",
     "a": "What is NETCONF?"
+  },
+  {
+    "q": "In a Python automation script, this specific class from the 'logging.handlers' module is used to direct log messages to a remote server using the standard Syslog protocol, typically over UDP port 514.",
+    "a": "What is SysLogHandler?"
   },
   {
     "q": "To prevent a Python script from attempting to configure an invalid network segment, an engineer implements this specific logic to ensure that a user-provided VLAN ID is an integer strictly within the range of 1 to 4094.",
@@ -79,19 +80,20 @@
     "q": "When an AI agent provides a response that is grammatically correct and technically plausible but contains non-existent CLI commands or incorrect logic, the recommendation is suffering from this specific phenomenon.",
     "a": "What is a Hallucination?"
   },      
-  { "q": "This open standard allows AI models to safely execute local Python code for network analysis.",
-    "a": "What is Model Context Protocol (MCP)?" 
+  { "q": "This specific MCP server component acts as the 'bridge' to a specific Cisco API.", 
+    "a": "What is a Tool (or Resource)?" 
   },
   {
     "q": "To objectively measure the accuracy of an AI's troubleshooting advice, an engineer compares the AI's output against a verified dataset of known issues and their verified solutions, which is referred to as this.",
     "a": "What is the Ground Truth?"
   },
   {
-    "q": "Before trusting an AI-generated configuration change, a professional automation workflow uses this specific 'Operations' tool to simulate the change in a virtual environment and verify that the resulting network state matches the intended outcome.",
-    "a": "What is Cisco Modeling Labs (CML) or pyATS?"
+    "q": "In a production FastMCP server, this specific decorator is used to define a Prompt Template, allowing the agent to follow a pre-defined sequence of troubleshooting steps for a common issue like a CRC Error.",
+    "a": "What is @mcp.prompt()?"
   },
-  { "q": "This specific MCP server component acts as the 'bridge' to a specific Cisco API.", 
-    "a": "What is a Tool (or Resource)?" 
+    {
+    "q": "This is the specific method called at the end of a Python script to actually start the FastMCP server and begin listening for JSON-RPC messages from the host.",
+    "a": "What is @mcp.run()?"
   }
     ]
   }
