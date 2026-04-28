@@ -1,0 +1,102 @@
+[
+  {
+    "name": "Routing Advanced Concepts",
+    "questions": [
+      {
+        "q": "This term describes the path data takes across networks.",
+        "a": "What is a route?"
+      },
+      {
+        "q": "This value determines the preferred path in routing.",
+        "a": "What is a metric?"
+      },
+      {
+        "q": "This administrative value determines route trustworthiness.",
+        "a": "What is administrative distance?"
+      },
+      {
+        "q": "This feature allows multiple routing protocols to share routes.",
+        "a": "What is route redistribution?"
+      },
+      {
+        "q": "This process summarizes multiple routes into one.",
+        "a": "What is route summarization?"
+      }
+    ]
+  },
+  {
+    "name": "General Networking",
+    "questions": [
+      {
+        "q": "This device connects networks together.",
+        "a": "What is a router?"
+      },
+      {
+        "q": "This device operates at Layer 2 of the OSI model.",
+        "a": "What is a switch?"
+      },
+      {
+        "q": "This model describes how networks communicate in seven layers.",
+        "a": "What is the OSI model?"
+      },
+      {
+        "q": "This layer handles encryption and compression.",
+        "a": "What is the Presentation layer?"
+      },
+      {
+        "q": "This layer manages sessions between applications.",
+        "a": "What is the Session layer?"
+      }
+    ]
+  },
+  {
+    "name": "Cisco Cybersecurity",
+    "questions": [
+      {
+        "q": "This software protects devices from malicious programs.",
+        "a": "What is antivirus?"
+      },
+      {
+        "q": "This attack tricks users into revealing sensitive information.",
+        "a": "What is phishing?"
+      },
+      {
+        "q": "This policy enforces strong password requirements.",
+        "a": "What is a password policy?"
+      },
+      {
+        "q": "This technique encrypts data to protect confidentiality.",
+        "a": "What is encryption?"
+      },
+      {
+        "q": "This principle grants users only the access they need.",
+        "a": "What is least privilege?"
+      }
+    ]
+  },
+  {
+    "name": "CCNA",
+    "questions": [
+      {
+        "q": "This exam validates foundational networking knowledge.",
+        "a": "What is the CCNA exam?"
+      },
+      {
+        "q": "This command displays interface configuration details.",
+        "a": "What is show running-config?"
+      },
+      {
+        "q": "This address uniquely identifies a device on a network.",
+        "a": "What is an IP address?"
+      },
+      {
+        "q": "This protocol provides connectionless communication.",
+        "a": "What is UDP?"
+      },
+      {
+        "q": "This addressing method allows multiple devices to share one public IP.",
+        "a": "What is NAT?"
+      }
+    ]
+  }
+]

@@ -1,0 +1,102 @@
+[
+  {
+    "name": "Routing Fundamentals",
+    "questions": [
+      {
+        "q": "This routing method requires manual configuration.",
+        "a": "What is static routing?"
+      },
+      {
+        "q": "This routing protocol uses hop count as its metric.",
+        "a": "What is RIP?"
+      },
+      {
+        "q": "This routing protocol is link-state based and widely used in enterprises.",
+        "a": "What is OSPF?"
+      },
+      {
+        "q": "This routing protocol is used to exchange routes between internet providers.",
+        "a": "What is BGP?"
+      },
+      {
+        "q": "This process selects the best route when multiple routes exist.",
+        "a": "What is route selection?"
+      }
+    ]
+  },
+  {
+    "name": "Network Monitoring",
+    "questions": [
+      {
+        "q": "This command checks connectivity to another device.",
+        "a": "What is ping?"
+      },
+      {
+        "q": "This command shows the path packets take to a destination.",
+        "a": "What is traceroute?"
+      },
+      {
+        "q": "This protocol collects statistics from network devices.",
+        "a": "What is SNMP?"
+      },
+      {
+        "q": "This tool captures and analyzes network traffic.",
+        "a": "What is a packet analyzer?"
+      },
+      {
+        "q": "This metric measures the delay of packets across a network.",
+        "a": "What is latency?"
+      }
+    ]
+  },
+  {
+    "name": "Cisco Learning Network VIP Members",
+    "questions": [
+      {
+        "q": "These members are recognized for helping others in the community.",
+        "a": "What are VIP members?"
+      },
+      {
+        "q": "This activity often earns recognition points in the community.",
+        "a": "What is answering questions?"
+      },
+      {
+        "q": "This type of content shares knowledge and guidance with other learners.",
+        "a": "What is a discussion post?"
+      },
+      {
+        "q": "This recognition highlights consistent contributions and leadership.",
+        "a": "What is community recognition?"
+      },
+      {
+        "q": "This role helps guide conversations and support learners.",
+        "a": "What is a mentor?"
+      }
+    ]
+  },
+  {
+    "name": "Security Operations",
+    "questions": [
+      {
+        "q": "This team monitors security alerts and incidents.",
+        "a": "What is a Security Operations Center?"
+      },
+      {
+        "q": "This log records user login activity.",
+        "a": "What is an authentication log?"
+      },
+      {
+        "q": "This tool aggregates logs from multiple systems.",
+        "a": "What is SIEM?"
+      },
+      {
+        "q": "This process investigates suspicious activity.",
+        "a": "What is incident response?"
+      },
+      {
+        "q": "This process restores systems after a security incident.",
+        "a": "What is recovery?"
+      }
+    ]
+  }
+]

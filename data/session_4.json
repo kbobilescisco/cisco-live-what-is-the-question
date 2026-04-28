@@ -1,0 +1,102 @@
+[
+  {
+    "name": "Wireless",
+    "questions": [
+      {
+        "q": "This standard operates at 2.4 GHz and 5 GHz.",
+        "a": "What is 802.11n?"
+      },
+      {
+        "q": "This device provides wireless connectivity to clients.",
+        "a": "What is an access point?"
+      },
+      {
+        "q": "This term describes overlapping wireless coverage areas.",
+        "a": "What is roaming?"
+      },
+      {
+        "q": "This channel width provides higher throughput in Wi-Fi networks.",
+        "a": "What is 40 MHz?"
+      },
+      {
+        "q": "This technology allows multiple devices to transmit simultaneously.",
+        "a": "What is MU-MIMO?"
+      }
+    ]
+  },
+  {
+    "name": "Automation Tools",
+    "questions": [
+      {
+        "q": "This programming language is commonly used for network automation.",
+        "a": "What is Python?"
+      },
+      {
+        "q": "This tool automates configuration management using playbooks.",
+        "a": "What is Ansible?"
+      },
+      {
+        "q": "This version control system tracks code changes.",
+        "a": "What is Git?"
+      },
+      {
+        "q": "This repository hosting service is widely used for collaboration.",
+        "a": "What is GitHub?"
+      },
+      {
+        "q": "This method allows systems to communicate programmatically.",
+        "a": "What is an API?"
+      }
+    ]
+  },
+  {
+    "name": "Network Design",
+    "questions": [
+      {
+        "q": "This topology connects devices to a central device.",
+        "a": "What is a star topology?"
+      },
+      {
+        "q": "This design improves network reliability through redundancy.",
+        "a": "What is high availability?"
+      },
+      {
+        "q": "This model divides networks into core, distribution, and access layers.",
+        "a": "What is the hierarchical network model?"
+      },
+      {
+        "q": "This technology aggregates multiple links into one logical link.",
+        "a": "What is EtherChannel?"
+      },
+      {
+        "q": "This design principle minimizes the impact of failures.",
+        "a": "What is fault tolerance?"
+      }
+    ]
+  },
+  {
+    "name": "Cisco Certifications",
+    "questions": [
+      {
+        "q": "This certification is the first step in Cisco networking careers.",
+        "a": "What is CCNA?"
+      },
+      {
+        "q": "This certification focuses on enterprise networking.",
+        "a": "What is CCNP Enterprise?"
+      },
+      {
+        "q": "This certification is considered expert level.",
+        "a": "What is CCIE?"
+      },
+      {
+        "q": "This certification focuses on security technologies.",
+        "a": "What is CCNP Security?"
+      },
+      {
+        "q": "This certification validates automation and programmability skills.",
+        "a": "What is DevNet Professional?"
+      }
+    ]
+  }
+]

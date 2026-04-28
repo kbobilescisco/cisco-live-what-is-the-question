@@ -1,0 +1,102 @@
+[
+  {
+    "name": "IPv6",
+    "questions": [
+      {
+        "q": "This IPv6 address type begins with FE80.",
+        "a": "What is a link-local address?"
+      },
+      {
+        "q": "This IPv6 feature allows automatic address configuration without DHCP.",
+        "a": "What is SLAAC?"
+      },
+      {
+        "q": "This IPv6 address type is routable on the internet.",
+        "a": "What is a global unicast address?"
+      },
+      {
+        "q": "This field in IPv6 replaces the TTL field in IPv4.",
+        "a": "What is Hop Limit?"
+      },
+      {
+        "q": "This transition technology tunnels IPv6 traffic over IPv4 networks.",
+        "a": "What is 6to4 tunneling?"
+      }
+    ]
+  },
+  {
+    "name": "Cloud and Virtualization",
+    "questions": [
+      {
+        "q": "This model provides virtual machines over the internet.",
+        "a": "What is IaaS?"
+      },
+      {
+        "q": "This model provides software applications via a web browser.",
+        "a": "What is SaaS?"
+      },
+      {
+        "q": "This technology allows multiple virtual machines to run on one physical host.",
+        "a": "What is virtualization?"
+      },
+      {
+        "q": "This cloud deployment model is dedicated to a single organization.",
+        "a": "What is a private cloud?"
+      },
+      {
+        "q": "This technology packages applications and dependencies together for portability.",
+        "a": "What is containerization?"
+      }
+    ]
+  },
+  {
+    "name": "Protocols",
+    "questions": [
+      {
+        "q": "This protocol resolves MAC addresses from IP addresses.",
+        "a": "What is ARP?"
+      },
+      {
+        "q": "This protocol provides secure remote login to devices.",
+        "a": "What is SSH?"
+      },
+      {
+        "q": "This protocol monitors network devices and performance.",
+        "a": "What is SNMP?"
+      },
+      {
+        "q": "This protocol dynamically discovers neighboring Cisco devices.",
+        "a": "What is CDP?"
+      },
+      {
+        "q": "This protocol allows devices from different vendors to discover each other.",
+        "a": "What is LLDP?"
+      }
+    ]
+  },
+  {
+    "name": "CCNA Automation",
+    "questions": [
+      {
+        "q": "This language is commonly used to automate network tasks.",
+        "a": "What is Python?"
+      },
+      {
+        "q": "This data format uses key-value pairs and is widely used in APIs.",
+        "a": "What is JSON?"
+      },
+      {
+        "q": "This protocol retrieves configuration data from network devices.",
+        "a": "What is NETCONF?"
+      },
+      {
+        "q": "This language is commonly used to structure API responses.",
+        "a": "What is JSON?"
+      },
+      {
+        "q": "This model-driven interface uses REST principles for network automation.",
+        "a": "What is RESTCONF?"
+      }
+    ]
+  }
+]

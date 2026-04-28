@@ -1,0 +1,102 @@
+[
+  {
+    "name": "Real-World Troubleshooting Scenarios",
+    "questions": [
+      {
+        "q": "A user cannot reach a website; this command checks connectivity first.",
+        "a": "What is ping?"
+      },
+      {
+        "q": "A cable is unplugged; this OSI layer is most likely affected.",
+        "a": "What is the Physical layer?"
+      },
+      {
+        "q": "A device has the wrong subnet mask; this configuration item should be verified.",
+        "a": "What is IP addressing?"
+      },
+      {
+        "q": "Multiple devices lose connectivity after a loop forms; this protocol prevents loops.",
+        "a": "What is Spanning Tree Protocol?"
+      },
+      {
+        "q": "Network performance drops due to excessive broadcasts; this solution reduces broadcast domains.",
+        "a": "What is VLAN segmentation?"
+      }
+    ]
+  },
+  {
+    "name": "Protocol Ports",
+    "questions": [
+      {
+        "q": "This protocol uses port 80.",
+        "a": "What is HTTP?"
+      },
+      {
+        "q": "This protocol uses port 443.",
+        "a": "What is HTTPS?"
+      },
+      {
+        "q": "This protocol uses port 22.",
+        "a": "What is SSH?"
+      },
+      {
+        "q": "This protocol uses port 53.",
+        "a": "What is DNS?"
+      },
+      {
+        "q": "This protocol uses port 161.",
+        "a": "What is SNMP?"
+      }
+    ]
+  },
+  {
+    "name": "Cisco Learning Network",
+    "questions": [
+      {
+        "q": "This online community supports Cisco certification learners.",
+        "a": "What is the Cisco Learning Network?"
+      },
+      {
+        "q": "These posts allow members to ask technical questions.",
+        "a": "What are discussion threads?"
+      },
+      {
+        "q": "This feature allows members to recognize helpful responses.",
+        "a": "What is marking a solution?"
+      },
+      {
+        "q": "This activity helps build reputation in the community.",
+        "a": "What is contributing helpful answers?"
+      },
+      {
+        "q": "This group recognizes highly engaged community members.",
+        "a": "What is the VIP program?"
+      }
+    ]
+  },
+  {
+    "name": "Bonus \u2013 Mixed Networking Challenge",
+    "questions": [
+      {
+        "q": "This term describes sending data to all devices on a network.",
+        "a": "What is broadcast?"
+      },
+      {
+        "q": "This term describes sending data to one specific device.",
+        "a": "What is unicast?"
+      },
+      {
+        "q": "This term describes sending data to a group of devices.",
+        "a": "What is multicast?"
+      },
+      {
+        "q": "This addressing scheme uses 128-bit addresses.",
+        "a": "What is IPv6?"
+      },
+      {
+        "q": "This protocol provides reliable, connection-oriented communication.",
+        "a": "What is TCP?"
+      }
+    ]
+  }
+]

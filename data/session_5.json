@@ -1,0 +1,102 @@
+[
+  {
+    "name": "VLANs and Switching",
+    "questions": [
+      {
+        "q": "This VLAN type carries user traffic.",
+        "a": "What is a data VLAN?"
+      },
+      {
+        "q": "This command sets a port to trunk mode.",
+        "a": "What is switchport mode trunk?"
+      },
+      {
+        "q": "This VLAN is used to carry management traffic.",
+        "a": "What is the management VLAN?"
+      },
+      {
+        "q": "This protocol advertises VLAN information between switches.",
+        "a": "What is VTP?"
+      },
+      {
+        "q": "This feature allows multiple physical links to act as one logical link.",
+        "a": "What is EtherChannel?"
+      }
+    ]
+  },
+  {
+    "name": "Network Services",
+    "questions": [
+      {
+        "q": "This service resolves hostnames to IP addresses.",
+        "a": "What is DNS?"
+      },
+      {
+        "q": "This service synchronizes time across network devices.",
+        "a": "What is NTP?"
+      },
+      {
+        "q": "This protocol transfers files between devices.",
+        "a": "What is FTP?"
+      },
+      {
+        "q": "This secure version of HTTP encrypts web traffic.",
+        "a": "What is HTTPS?"
+      },
+      {
+        "q": "This service dynamically assigns IP configuration to clients.",
+        "a": "What is DHCP?"
+      }
+    ]
+  },
+  {
+    "name": "Cisco Cybersecurity",
+    "questions": [
+      {
+        "q": "This term describes verifying a user's identity.",
+        "a": "What is authentication?"
+      },
+      {
+        "q": "This term describes granting permissions to resources.",
+        "a": "What is authorization?"
+      },
+      {
+        "q": "This term describes tracking user activity.",
+        "a": "What is accounting?"
+      },
+      {
+        "q": "These three processes together form a common security framework.",
+        "a": "What is AAA?"
+      },
+      {
+        "q": "This attack intercepts communication between two parties.",
+        "a": "What is a man-in-the-middle attack?"
+      }
+    ]
+  },
+  {
+    "name": "Cisco History",
+    "questions": [
+      {
+        "q": "This Cisco operating system runs on routers and switches.",
+        "a": "What is IOS?"
+      },
+      {
+        "q": "This annual event brings Cisco customers and partners together worldwide.",
+        "a": "What is Cisco Live?"
+      },
+      {
+        "q": "This city is home to Cisco headquarters.",
+        "a": "What is San Jose?"
+      },
+      {
+        "q": "This company was founded in 1984 and is known for networking equipment.",
+        "a": "What is Cisco?"
+      },
+      {
+        "q": "This CEO led Cisco from 1995 to 2015.",
+        "a": "Who is John Chambers?"
+      }
+    ]
+  }
+]

@@ -1,0 +1,102 @@
+[
+  {
+    "name": "APIs and Data Formats",
+    "questions": [
+      {
+        "q": "This API style uses HTTP methods like GET and POST.",
+        "a": "What is REST?"
+      },
+      {
+        "q": "This method retrieves data from an API.",
+        "a": "What is GET?"
+      },
+      {
+        "q": "This format uses angle brackets to structure data.",
+        "a": "What is XML?"
+      },
+      {
+        "q": "This format is lightweight and commonly used in automation.",
+        "a": "What is JSON?"
+      },
+      {
+        "q": "This response code indicates a successful request.",
+        "a": "What is HTTP 200?"
+      }
+    ]
+  },
+  {
+    "name": "Troubleshooting",
+    "questions": [
+      {
+        "q": "This approach starts testing at the physical layer first.",
+        "a": "What is bottom-up troubleshooting?"
+      },
+      {
+        "q": "This step involves identifying the problem.",
+        "a": "What is problem identification?"
+      },
+      {
+        "q": "This step involves testing a possible solution.",
+        "a": "What is testing the hypothesis?"
+      },
+      {
+        "q": "This step involves documenting findings.",
+        "a": "What is documentation?"
+      },
+      {
+        "q": "This step ensures the issue does not happen again.",
+        "a": "What is preventive action?"
+      }
+    ]
+  },
+  {
+    "name": "Wireless Networking",
+    "questions": [
+      {
+        "q": "This band operates at 2.4 GHz.",
+        "a": "What is Wi-Fi?"
+      },
+      {
+        "q": "This device broadcasts a wireless signal.",
+        "a": "What is an access point?"
+      },
+      {
+        "q": "This identifier names a wireless network.",
+        "a": "What is SSID?"
+      },
+      {
+        "q": "This standard provides faster speeds than 802.11n.",
+        "a": "What is 802.11ac?"
+      },
+      {
+        "q": "This security protocol replaced WPA2 with stronger encryption.",
+        "a": "What is WPA3?"
+      }
+    ]
+  },
+  {
+    "name": "Cisco Tools and Platforms",
+    "questions": [
+      {
+        "q": "This Cisco platform provides online labs for learning.",
+        "a": "What is Cisco Modeling Labs?"
+      },
+      {
+        "q": "This platform hosts Cisco certifications and training resources.",
+        "a": "What is the Cisco Learning Network?"
+      },
+      {
+        "q": "This Cisco tool provides centralized device management.",
+        "a": "What is Cisco DNA Center?"
+      },
+      {
+        "q": "This Cisco platform provides cloud-based security services.",
+        "a": "What is Cisco Umbrella?"
+      },
+      {
+        "q": "This Cisco platform integrates multiple security tools into one interface.",
+        "a": "What is SecureX?"
+      }
+    ]
+  }
+]
